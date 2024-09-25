@@ -40,14 +40,17 @@ def get_phone_info(url):
 
         # Извлечение памяти
         memory_items = []
-        memory_wrapper = soup.find('div', class_='detail__tp-wrapper-items')
-        memory_items = memory_wrapper.find_all(class_='detail__tp-wrapper-item')
+        memory_wrapper = soup.find_all(class_='detail__tp-wrapper-items')
         if memory_wrapper:
-            memory_list = memory_wrapper.find_all('li')
+            memory_list = memory_wrapper[1].find_all('li')
             for item in memory_list:
-                memory_items.append(item.get_title(strip=True))
+                memory_items.append(item.get_text(strip=True))
         memory = ', '.join(memory_items) if memory_items else 'Нет информации о памяти'
 
+        prices = {
+            'memory_model': 11,
+            'price': 12211,
+        }
 
         price = soup.find(class_='price').get_text(strip=True) if soup.find(class_='price') else 'Нет информации о цене'
 
@@ -73,4 +76,10 @@ for link in product_links:
         all_phone_info.append(phone_info)
 
 # Печатаем собранную информацию о всех телефонах
-print(all_phone_info)
+for phone_info in all_phone_info:
+    model = phone_info.get('model')
+    memory = phone_info.get('memory')
+    price = phone_info.get('price')
+
+    # Форматируем вывод
+    print(f'"{model}" || "{memory}" || "{price}"')
